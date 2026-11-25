@@ -1,6 +1,8 @@
 # EFCsys Bots — Aplicação da Shard Cloud
 FROM node:22.23-slim
 ENV NODE_ENV=production
+# limite de memória do Node abaixo dos 512 MB da Aplicação, com folga para o resto do processo
+ENV NODE_OPTIONS=--max-old-space-size=384
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
