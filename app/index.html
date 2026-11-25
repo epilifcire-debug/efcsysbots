@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EFCsys Bots</title>
+<meta name="description" content="A equipe de robozinhos da EFCsys: Chefe, PM, UI/UX, Código, Banco de Dados, Fluxos e Docs.">
+<meta name="theme-color" content="#DCE3E8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icone-192.png">
+<link rel="apple-touch-icon" href="icons/icone-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="topo">
+  <img class="topo-icone" src="sprites/chefe_repouso.webp" alt="" width="40" height="59">
+  <div>
+    <h1>EFCsys Bots</h1>
+    <p class="topo-sub">A equipe de robozinhos</p>
+  </div>
+</header>
+
+<main id="conteudo">
+  <section id="tela-equipe" class="tela" aria-labelledby="t-equipe">
+    <h2 id="t-equipe">Equipe</h2>
+    <p class="intro">Você fala com o Chefe. O pedido passa pela equipe nesta ordem e volta pronto. Toque num robô para ver as expressões dele.</p>
+    <ol class="grade-equipe" id="lista-equipe"></ol>
+  </section>
+
+  <section id="tela-fluxo" class="tela" aria-labelledby="t-fluxo" hidden>
+    <h2 id="t-fluxo">Fluxo de trabalho</h2>
+    <p class="intro">Como um pedido anda entre os robôs.</p>
+    <div id="fluxo"></div>
+  </section>
+
+  <section id="tela-estados" class="tela" aria-labelledby="t-estados" hidden>
+    <h2 id="t-estados">Expressões</h2>
+    <p class="intro">Todos usam os mesmos 8 rostos. Escolha um para ver a equipe inteira com ele.</p>
+    <div class="seletor" id="seletor-estados" role="group" aria-label="Expressão"></div>
+    <ol class="grade-equipe pequena" id="lista-estados"></ol>
+  </section>
+</main>
+
+<footer class="rodape">
+  <span class="assinatura">by: efcsys</span>
+  <span class="versao" id="versao"></span>
+</footer>
+
+<nav class="nav" aria-label="Navegação principal">
+  <a href="#equipe" data-tela="equipe"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Equipe</span></a>
+  <a href="#fluxo" data-tela="fluxo"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="6" rx="1.5"/><rect x="14" y="15" width="7" height="6" rx="1.5"/><path d="M6.5 9v3a3 3 0 0 0 3 3h4.5"/></svg><span>Fluxo</span></a>
+  <a href="#estados" data-tela="estados"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="3"/><path d="M8 10v1M16 10v1M9 14q3 2 6 0"/></svg><span>Expressões</span></a>
+</nav>
+
+<dialog id="detalhe" aria-labelledby="detalhe-nome">
+  <form method="dialog" class="detalhe-fechar"><button aria-label="Fechar">✕</button></form>
+  <img id="detalhe-img" src="" alt="" width="240" height="355">
+  <h3 id="detalhe-nome"></h3>
+  <p id="detalhe-sub" class="detalhe-sub"></p>
+  <p id="detalhe-faz"></p>
+  <div class="seletor" id="detalhe-estados" role="group" aria-label="Expressão do robô"></div>
+</dialog>
+
+<div class="aviso" id="aviso-atualizar" hidden>
+  <span>Tem uma versão nova do app.</span>
+  <button type="button" id="botao-atualizar">Atualizar</button>
+</div>
+
+<script src="version.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
