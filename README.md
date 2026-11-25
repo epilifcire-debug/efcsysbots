@@ -26,41 +26,83 @@ Todos os robôs usam os mesmos 8 rostos. Só a tela muda; o corpo e o equipament
 
 ![Expressões](assets/folhas/equipe_expressoes.png)
 
+## O app
+
+Você entra com **usuário ou e-mail** e senha, escreve o pedido para o **Chefe**, e ele decide quem da equipe resolve. Na tela você acompanha cada robô mudando de expressão enquanto trabalha (pensando, trabalhando, terminou) e recebe a entrega de cada um num cartão, com botão de copiar nos blocos de código. A conversa fica salva.
+
+Nesta versão os robôs não mexem em repositórios nem em bancos: entregam planos, código e SQL para você revisar. Ligar o Código ao GitHub e o Banco de Dados a um projeto real é a próxima etapa.
+
 ## O que tem aqui
 
 ```
-app/                  App PWA (estático, instalável no celular)
+server/               Servidor Node.js: login, conversa e o Chefe distribuindo tarefas
+  equipe.js           Instruções de cada robô e a orquestração do Chefe
+  auth.js             Login por usuário ou e-mail, sessão segura em cookie
+  db.js               Tabelas no PostgreSQL (criadas sozinhas na primeira vez)
+  criar-admin.js      Cria o Administrador Master pelo terminal
+  teste.js            Teste de ponta a ponta (API do Claude simulada)
+app/                  App PWA (instalável no celular)
   sprites/            Os 56 robôs em WebP leve (7 robôs x 8 expressões)
-  icons/              Ícones do app
 assets/
   sprites/            Os 56 robôs em PNG com fundo transparente, tamanho original
   folhas/             Folha da equipe e folha de expressões
   referencias/        Imagens de referência do Eric (rosto padrão, expressões, fluxo)
 docs/                 Fluxo de trabalho e padrão visual dos robôs
-ferramentas/          Script que monta os sprites a partir das referências
+ferramentas/          Scripts que montam os sprites a partir das referências
+Dockerfile            Imagem para a Shard Cloud
 ```
 
 Nome dos sprites: `funcao_estado`, por exemplo `banco_trabalhando.png`.
 Funções: `chefe`, `pm`, `uiux`, `codigo`, `banco`, `fluxos`, `docs`.
 
-## Rodar o app
+## Publicar na Shard Cloud
 
-É um site estático, sem build:
+1. Na Shard Cloud, crie um banco **PostgreSQL** e copie a URL de conexão.
+2. Crie uma **Aplicação** ligada a este repositório, branch `main`. Ela usa o `Dockerfile` da raiz.
+3. Cadastre as variáveis de ambiente no painel (nunca no repositório):
+
+| Variável | Para que serve |
+|----------|----------------|
+| `DATABASE_URL` | URL do PostgreSQL da Shard |
+| `ANTHROPIC_API_KEY` | Chave da API do Claude |
+| `ADMIN_USUARIO` | Seu usuário de Administrador Master (ex.: `eric`) |
+| `ADMIN_SENHA` | Sua senha (mínimo 8 caracteres). Depois do primeiro login, pode apagar |
+| `ADMIN_EMAIL` | Opcional: para entrar também pelo e-mail |
+| `ANTHROPIC_MODEL` | Opcional: modelo dos robôs (padrão `claude-sonnet-5-5`) |
+| `CHEFE_MODEL` | Opcional: modelo só do Chefe |
+| `DATABASE_SSL` | Opcional: `false` se o banco não usar SSL |
+
+A porta vem da variável `PORT` que a Shard define. O endereço de saúde é `/health`.
+
+4. Publique e confira nos logs a linha `Administrador Master criado: eric` e depois `EFCsys Bots no ar`.
+5. Abra o endereço da aplicação e entre com o seu usuário.
+
+Para criar o Administrador Master pelo terminal em vez das variáveis:
 
 ```bash
-cd app
-python3 -m http.server 8080
+npm run criar-admin -- --usuario eric --senha "uma-senha-forte" --email voce@exemplo.com
+```
+
+Cada pedido usa a API do Claude, e um pedido grande pode chamar até 8 robôs. O servidor aceita um pedido por vez por pessoa.
+
+## Rodar no seu computador
+
+```bash
+npm ci
+cp .env.example .env    # preencha DATABASE_URL e ANTHROPIC_API_KEY
+node --env-file=.env server/index.js
 # abrir http://localhost:8080
 ```
 
-### Publicar no GitHub Pages
+Teste automático (precisa de um PostgreSQL de teste, não gasta créditos):
 
-O workflow `.github/workflows/pages.yml` publica a pasta `app/` a cada push na `main` e grava a versão e o commit no rodapé do app.
-Uma vez só: em **Settings › Pages**, escolha **Source: GitHub Actions**.
+```bash
+TEST_DATABASE_URL=postgres://usuario@127.0.0.1:5432/teste npm test
+```
 
 ### Nova versão
 
-Ao mudar o app, aumente `VERSAO` em `app/sw.js`. Quem já tem o app instalado vê o aviso "Tem uma versão nova do app" e atualiza com um toque.
+Ao mudar o app, aumente a versão nos três lugares: `version` em `package.json`, `VERSAO` em `app/sw.js` e `versao` em `app/version.js`. A tela de login mostra essa versão no rodapé (`v0.2.0`), para você conferir se o deploy atualizou. Quem já tem o app instalado vê o aviso "Tem uma versão nova do app" e atualiza com um toque.
 
 ## Refazer os sprites
 

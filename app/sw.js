@@ -1,6 +1,6 @@
 // Service worker do EFCsys Bots
 // Troque a VERSAO a cada entrega: o cache antigo é apagado na ativação, sem mexer em outros dados do navegador.
-const VERSAO = "0.1.0";
+const VERSAO = "0.2.0";
 const CACHE = "efcsysbots-" + VERSAO;
 const ARQUIVOS = [
   "./",
@@ -8,6 +8,7 @@ const ARQUIVOS = [
   "app.css",
   "app.js",
   "version.js",
+  "markdown.js",
   "manifest.webmanifest",
   "icons/icone-192.png",
   "icons/icone-512.png",
@@ -87,7 +88,9 @@ self.addEventListener("message", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const req = e.request;
-  if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
+  const url = new URL(req.url);
+  // nada da API nem do login passa pelo cache
+  if (req.method !== "GET" || url.origin !== location.origin || url.pathname.includes("/api/") || url.pathname.endsWith("/health")) return;
   // páginas: rede primeiro (pega versão nova), cache se estiver sem internet
   if (req.mode === "navigate") {
     e.respondWith(fetch(req).catch(() => caches.match("index.html")));

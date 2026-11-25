@@ -1,2 +1,2 @@
-// Gerado no deploy (GitHub Actions). Em desenvolvimento fica sem commit.
-window.EFCSYS_VERSAO = { versao: "0.1.0", commit: "" };
+// Versão mostrada na tela de login. Mude junto com VERSAO em sw.js e "version" em package.json.
+window.EFCSYS_VERSAO = { versao: "0.2.0" };
